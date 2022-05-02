@@ -1,0 +1,19 @@
+{{- range .Values.deploy}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .deploymentName }}
+  labels:
+    app: {{ .deploymentName }}
+spec:
+  type: {{ .serviceType }}
+  selector:
+    app: {{ .deploymentName }}
+  ports:
+{{- range .ports }}
+    - protocol: TCP
+      port: 80
+      targetPort: {{ .port }}
+{{- end }}
+---
+{{- end }}

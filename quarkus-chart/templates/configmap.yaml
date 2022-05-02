@@ -1,0 +1,14 @@
+{{- range .Values.deploy }}
+{{- if .applicationProperties.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .deploymentName }}
+  labels:
+    app: {{ .deploymentName }}
+data:
+  {{- toYaml .applicationProperties.properties | nindent 4 }}
+
+{{- end }}
+---
+{{- end }}

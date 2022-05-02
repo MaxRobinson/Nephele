@@ -1,0 +1,55 @@
+{{- range .Values.deploy}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .deploymentName }}
+spec:
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels:
+      app: {{ .deploymentName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .deploymentName }}
+    spec:
+      imagePullSecrets:
+        - name: {{ $.Values.imagePullSecret }}
+      containers:
+        - name: {{ .deploymentName }}
+          image: {{ $.Values.image.name }}:{{ $.Values.image.tag }}
+          imagePullPolicy: Always
+          ports:
+{{- range .ports }}
+            - name: {{ .name }}
+              containerPort: {{ .targetPort }}
+              protocol: {{ .protocol }}
+{{- end }}
+{{- if .resources }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+{{- end }}
+{{- if .env }}
+          env:
+            {{- tpl (toYaml .env) . | nindent 12 }}
+{{- end }}
+{{- if .applicationProperties.enabled }}
+          envFrom:
+            - configMapRef:
+                name: {{ .deploymentName }}
+                optional: False
+{{- end }}
+          volumeMounts:
+{{- if .applicationProperties.enabled }}
+            - name: application-properties
+              mountPath: {{ .applicationProperties.mountPath }}
+{{- end }}
+
+      volumes:
+{{- if .applicationProperties.enabled }}
+        - name: application-properties
+          configMap:
+            name: {{ .deploymentName }}
+{{- end }}
+---
+{{- end }}

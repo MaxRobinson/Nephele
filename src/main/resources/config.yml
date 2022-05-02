@@ -1,0 +1,18 @@
+root_dir: ~/
+dev_instance: false
+
+upload:
+  # Static data - Special data folder that basically should never expire
+  - path: reference/reference_files
+    recursive: True
+    last_mod_time_delta_days: 1095  # 3 years
+    dated_directories: False
+    always_upload_root_files: True
+
+  - path: data/raw_data
+    recursive: True
+    last_mod_time_delta_days: 4
+    dated_directories: False
+    always_upload_root_files: True
+
+

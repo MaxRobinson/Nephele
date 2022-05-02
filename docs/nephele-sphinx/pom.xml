@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.nephele</groupId>
+  <artifactId>nephele-docs</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>${project.artifactId}-${project.version}</name>
+  <description>Documentation for Nephele</description>
+  <url>https://www.github.com/MaxRobinson/Nephele</url>
+  <inceptionYear>2021</inceptionYear>
+
+  <developers>
+    <developer>
+      <name>Max Robinson</name>
+      <email>maxrgit@gmail.com</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:MaxRobinson/nephele.git</connection>
+    <developerConnection>scm:git:git@github.com:MaxRobinson/nephele.git</developerConnection>
+    <url>https://www.github.com/MaxRobinson/nephele</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <issueManagement>
+    <system>Github</system>
+    <url>https://www.github.com/MaxRobinson/nephele/issues</url>
+  </issueManagement>
+
+  <properties>
+    <app.name>Nephele</app.name>
+    <pdf.name>Nephele User Guide</pdf.name>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <license.licenseName>mit</license.licenseName>
+  </properties>
+
+  <dependencies>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+  </repositories>
+
+  <!-- let's us grab license jars from the local server -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <!-- default build settings for child modules -->
+  <build>
+    <plugins>
+      <!-- enforce Java version on compile -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <!-- copy sources into target w/ filtering -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+        <executions>
+          <execution>
+            <id>copy-to-target</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/sphinx/source</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/site/rst</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>**/*.rst</include>
+                    <include>**/conf.py</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>${basedir}/src/main/site/rst</directory>
+                  <filtering>false</filtering>
+                  <excludes>
+                    <exclude>**/*.rst</exclude>
+                    <exclude>**/conf.py</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- generate the html documentation -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>generate-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <failOnError>false</failOnError>
+              <target name="run sphinx">
+                <mkdir dir="target/sphinx/html" />
+                <exec executable="sphinx-build">
+                  <arg value="-b" />
+                  <arg value="html" />
+                  <arg value="target/sphinx/source" />
+                  <arg value="target/site" />
+                </exec>
+                <exec executable="sphinx-build">
+                  <arg value="-b" />
+                  <arg value="latex" />
+                  <arg value="target/sphinx/source" />
+                  <arg value="target/sphinx/build/latex" />
+                </exec>
+                <!-- repeat latex build twice to get table of contents -->
+                <exec dir="target/sphinx/build/latex" executable="pdflatex" failifexecutionfails="false">
+                  <arg value="${pdf.name}.tex" />
+                </exec>
+                <exec dir="target/sphinx/build/latex" executable="pdflatex" failifexecutionfails="false">
+                  <arg value="${pdf.name}.tex" />
+                </exec>
+                <copy file="target/sphinx/build/latex/${pdf.name}.pdf" tofile="target/site/${pdf.name}.pdf" failonerror="false" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.9.1</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

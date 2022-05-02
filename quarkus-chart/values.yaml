@@ -1,0 +1,71 @@
+imagePullSecret: <pull secret>
+image:
+  ## Name of the image you want to build/deploy
+  ## Defaults to the release name
+  name: s3mirrorservice
+  ## Tag that you want to build/deploy
+  tag: 1.0-SNAPSHOT
+
+## Application/Deployment-specific values (For configuring Deployment, Service, Route, ConfigMap, etc)
+deploy:
+  - deploymentName: test1
+    ## Number of pod replicas to deploy
+    replicas: 1
+
+    ## Freeform resources for Quarkus. More information: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    resources:
+      limits:
+        #      cpu: 100m
+        memory: 8Gi
+      requests:
+        #      cpu: 50m
+        memory: 5Gi
+
+    ## Type of service to create. More information: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    serviceType: ClusterIP
+
+    ## Freeform service ports. More information: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    ports:
+      - name: http
+        port: 8080
+        targetPort: 8080
+        protocol: TCP
+
+    ## Freeform Readiness Probe. More information: https://docs.openshift.com/container-platform/4.6/applications/application-health.html#application-health-about_application-health
+    readinessProbe:
+      httpGet:
+        path: /
+        port: http
+    ## If you don't want a readinessProbe, override like this in your values file
+    # readinessProve: ''
+
+    ## Freeform env for the Quarkus app. More information: https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/
+    env:
+    #  - name: VAR_NAME
+    #    value: var-value
+
+    ## Freeform envFrom for the Quarkus app. More information: https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#configure-all-key-value-pairs-in-a-configmap-as-container-environment-variables
+    envFrom:
+    #  - configMapRef:
+    #      name: special-config
+
+    ## Application properties file for configuring the Quarkus app
+    applicationProperties:
+      ## Determines if application properties should be created in a configmap and mounted to the Quarkus container
+      enabled: True
+      ## Location to mount the properties file
+      mountPath: /deployments/config/
+      ## Application properties file contents
+      properties:
+        AWS_ACCESS_KEY_ID: robinma1
+        AWS_SECRET_ACCESS_KEY: robinma1
+        QUARKUS_S3_ENDPOINT_OVERRIDE: "http://<s3-minio-override>:9001"
+        QUARKUS_REDIS_HOSTS: "redis://quarkus-redis-cli-master:6379"
+
+
+
+
+
+global:
+  ## Override the release name
+  nameOverride:

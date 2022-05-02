@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: upload-mirror-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: ""
+      http:
+        paths:
+{{- range .Values.deploy}}
+          - path: /{{ .deploymentName}}(/|$)(.*)
+            pathType: Prefix
+            backend:
+              serviceName: {{ .deploymentName }}
+              servicePort: 80
+{{- end}}
