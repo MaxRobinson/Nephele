@@ -14,7 +14,7 @@ Nephele is useful when there is a centralized Production set of resources that d
 
 # Sources
 ## Index Sources
-Box
+* Box
 
 ## Download Sources¶
 Where Assets can be downloaded from to upload else where.
