@@ -69,6 +69,8 @@ deploy:
         S3MIRROR_S3_ENDPOINT_OVERRIDE: "http://<s3-minio-override>:9001"
         S3MIRROR_S3_ACCESS_KEY_ID: "changeme"
         S3MIRROR_S3_SECRET_ACCESS_KEY: "changeme"
+        S3MIRROR_SCHEDULE_INDEXER: "0 0/7 * * * ?"
+        S3MIRROR_SCHEDULE_MIRROR: "0 0/3 * * * ?"
 
 
 

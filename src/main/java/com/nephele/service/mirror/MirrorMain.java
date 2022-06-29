@@ -92,7 +92,7 @@ public class MirrorMain {
     public MirrorMain() {
     }
 
-    @Scheduled(cron="0 0/3 * * * ?")
+    @Scheduled(cron="{s3mirror.schedule.mirror}")
     public void mirrorMain() throws Exception {
         ensureInit();
         if(mirrorMode){

@@ -79,7 +79,7 @@ public class RedisIndexer {
         todayDateTime = ZonedDateTime.of(today, utc);
     }
 
-    @Scheduled(cron="0 0/7 * * * ?")
+    @Scheduled(cron="{s3mirror.schedule.indexer}")
     public void indexMain() throws JsonProcessingException {
         if(indexMode){
             index();
