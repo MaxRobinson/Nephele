@@ -23,7 +23,6 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
     <quarkus.platform.version>2.10.0.Final</quarkus.platform.version>
-    <quarkus-plugin.version>2.10.0.Final</quarkus-plugin.version>
     <quarkus-amazon-services.version>1.1.1</quarkus-amazon-services.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
   </properties>
@@ -76,6 +75,8 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-redis-client</artifactId>
     </dependency>
+
+    <!-- Required for S3 Integration -->
     <dependency>
       <groupId>io.quarkiverse.amazonservices</groupId>
       <artifactId>quarkus-amazon-s3</artifactId>
@@ -84,10 +85,12 @@
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>url-connection-client</artifactId>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>software.amazon.awssdk</groupId>-->
-<!--      <artifactId>netty-nio-client</artifactId>-->
-<!--    </dependency>-->
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>netty-nio-client</artifactId>
+    </dependency>
+    <!-- End S3 deps -->
+
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-config-yaml</artifactId>
