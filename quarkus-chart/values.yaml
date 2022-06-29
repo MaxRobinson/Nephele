@@ -57,11 +57,18 @@ deploy:
       mountPath: /deployments/config/
       ## Application properties file contents
       properties:
-        AWS_ACCESS_KEY_ID: robinma1
-        AWS_SECRET_ACCESS_KEY: robinma1
+        AWS_ACCESS_KEY_ID: "changeme"
+        AWS_SECRET_ACCESS_KEY: "changeme"
         QUARKUS_S3_ENDPOINT_OVERRIDE: "http://<s3-minio-override>:9001"
         QUARKUS_REDIS_HOSTS: "redis://quarkus-redis-cli-master:6379"
-
+        QUARKUS_LOG_LEVEL: INFO
+        S3MIRROR_SOURCE: "box"
+        S3MIRROR_TARGET: "S3"
+        S3MIRROR_MODE_INDEX: "True"
+        S3MIRROR_MODE_MIRROR: "True"
+        S3MIRROR_S3_ENDPOINT_OVERRIDE: "http://<s3-minio-override>:9001"
+        S3MIRROR_S3_ACCESS_KEY_ID: "changeme"
+        S3MIRROR_S3_SECRET_ACCESS_KEY: "changeme"
 
 
 
