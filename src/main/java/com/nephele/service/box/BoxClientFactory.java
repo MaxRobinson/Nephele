@@ -58,7 +58,7 @@ public class BoxClientFactory {
                 init();
             } catch (IOException e) {
                 logger.error("Cannot initialize box client from config file.", e);
-                return null;
+                throw new RuntimeException(e);
             }
         }
         return authenticate();
@@ -75,19 +75,24 @@ public class BoxClientFactory {
     public void init() throws IOException {
         URL res = Thread.currentThread().getContextClassLoader().getResource("box_jwt_config.json");
         if (res == null){
-            return;
+            throw new RuntimeException("Cannot load box jwt auth file");
         }
 
-        JsonNode config = om.readTree(res);
-        JsonNode settings = config.get("boxAppSettings");
+        try {
+            JsonNode config = om.readTree(res);
+            JsonNode settings = config.get("boxAppSettings");
 
-        clientId = settings.get("clientID").asText();
-        clientSecret = settings.get("clientSecret").asText();
-        JsonNode appAuth = settings.get("appAuth");
-        publicKeyId = appAuth.get("publicKeyID").asText();
-        privateKey = appAuth.get("privateKey").asText();
-        passphrase = appAuth.get("passphrase").asText();
-        enterpriseId = config.get("enterpriseID").asText();
+            clientId = settings.get("clientID").asText();
+            clientSecret = settings.get("clientSecret").asText();
+            JsonNode appAuth = settings.get("appAuth");
+            publicKeyId = appAuth.get("publicKeyID").asText();
+            privateKey = appAuth.get("privateKey").asText();
+            passphrase = appAuth.get("passphrase").asText();
+            enterpriseId = config.get("enterpriseID").asText();
+        } catch (NullPointerException e) {
+            logger.error("Problem parsing Box JWT Auth file");
+            throw new RuntimeException(e);
+        }
     }
 
     private BoxDeveloperEditionAPIConnection authenticate() {
